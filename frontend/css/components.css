@@ -1,0 +1,648 @@
+/* ===== Button Foundation ===== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid var(--color-primary-dark);
+    outline-offset: 2px;
+}
+
+.btn-secondary {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-bg-alt);
+    border-color: var(--color-secondary);
+}
+
+/* ===== Link Foundation ===== */
+
+.link {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ===== Header / Navbar ===== */
+
+#site-header {
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+.logo-icon {
+    font-size: 22px;
+}
+
+.logo-text {
+    font-family: var(--font-family);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.main-nav .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    font-family: var(--font-family);
+    font-size: 15px;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+    color: var(--color-primary);
+}
+
+.nav-link[aria-current="page"] {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: 500;
+}
+
+.nav-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* Menu button: hidden on desktop by default */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--color-text);
+}
+
+.menu-toggle:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ===== Hero Section ===== */
+
+.hero {
+    padding: var(--space-xxl) var(--container-padding);
+    text-align: center;
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.hero-container {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.hero-heading {
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+}
+
+.hero-subtitle {
+    font-size: var(--font-size-md);
+    font-weight: 500;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+}
+
+.hero-description {
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--space-xl);
+}
+
+/* ===== Hero Search (functional form) ===== */
+
+.hero-search {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm);
+    box-shadow: var(--shadow-md);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hero-search:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    padding-left: var(--space-sm);
+    flex-shrink: 0;
+}
+
+.hero-search-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    padding: var(--space-sm) var(--space-xs);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    color: var(--color-text);
+    background: transparent;
+}
+
+.hero-search-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.clear-search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    font-size: 18px;
+    line-height: 1;
+    color: var(--color-text-muted);
+    background: transparent;
+    flex-shrink: 0;
+}
+
+.clear-search-btn:hover {
+    background-color: var(--color-bg-alt);
+    color: var(--color-text);
+}
+
+.clear-search-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.hero-search-btn:focus-visible {
+    outline: 2px solid var(--color-primary-dark);
+    outline-offset: 2px;
+}
+
+.hero-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    color: var(--color-text);
+    background: transparent;
+}
+
+.hero-search-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.hero-search-input:disabled {
+    cursor: not-allowed;
+}
+
+.hero-search-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===== Search Suggestions ===== */
+
+.hero-container {
+    position: relative;
+    /* anchors the absolutely-positioned dropdown below it */
+}
+
+.suggestions-list {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    left: 0;
+    right: 0;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    max-height: 260px;
+    overflow-y: auto;
+    z-index: 50;
+    text-align: left;
+}
+
+.suggestion-item {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.suggestion-item:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary-dark);
+}
+
+/* ===== Result Section ===== */
+
+.result-section {
+    padding: var(--space-xl) var(--container-padding) var(--space-xxl);
+}
+
+.result-card {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-xl);
+}
+
+/* --- Word header row --- */
+.result-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.result-word-group {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.result-word {
+    font-size: var(--font-size-xl);
+    color: var(--color-text);
+}
+
+.result-phonetic {
+    font-size: var(--font-size-md);
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* --- Favorite button --- */
+.favorite-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+    background-color: var(--color-bg);
+    flex-shrink: 0;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.favorite-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.favorite-btn[aria-pressed="true"] {
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.favorite-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* --- Part of speech tag --- */
+.pos-tag {
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-primary-dark);
+    background-color: var(--color-primary-light);
+    padding: 2px var(--space-sm);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-lg);
+}
+
+/* --- Content blocks (Meaning, Examples, etc.) --- */
+.result-block {
+    margin-bottom: var(--space-lg);
+}
+
+.result-block:last-child {
+    margin-bottom: 0;
+}
+
+.result-block-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+
+/* --- Tag lists (synonyms, antonyms, related) --- */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+/* ===== Tag Components (Synonyms / Antonyms) ===== */
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.tag {
+    /* Reset default <button> styling */
+    font-family: var(--font-family);
+    border: 1px solid transparent;
+    cursor: pointer;
+
+    /* Pill shape */
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-full);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.tag:active {
+    transform: scale(0.97);
+}
+
+.tag:focus-visible {
+    outline: 2px solid var(--color-primary-dark);
+    outline-offset: 2px;
+}
+
+/* --- Synonym styling (blue, positive association) --- */
+.tag-synonym {
+    color: var(--color-primary-dark);
+    background-color: var(--color-primary-light);
+}
+
+.tag-synonym:hover {
+    background-color: #bfdbfe;
+    border-color: var(--color-primary);
+}
+
+/* --- Antonym styling (red, opposite association) --- */
+.tag-antonym {
+    color: var(--color-danger);
+    background-color: #fee2e2;
+}
+
+.tag-antonym:hover {
+    background-color: #fecaca;
+    border-color: var(--color-danger);
+}
+
+/* --- Related word styling (neutral, unchanged from Module 7) --- */
+.tag-related {
+    color: var(--color-secondary-dark);
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+}
+
+/* ===== Meanings (multiple parts of speech + numbered definitions) ===== */
+
+.meanings-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.meaning-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.meaning-block .pos-tag {
+    display: inline-block;
+    width: fit-content;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    font-style: italic;
+    color: var(--color-primary-dark);
+    background-color: var(--color-primary-light);
+    padding: 2px var(--space-sm);
+    border-radius: var(--radius-sm);
+}
+
+.definitions-list {
+    list-style: none;
+    counter-reset: definition-counter;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding-left: 0;
+}
+
+/* ===== Definitions (updated: now a container for text + nested examples) ===== */
+
+.definition-item {
+    counter-increment: definition-counter;
+    position: relative;
+    padding-left: var(--space-lg);
+}
+
+.definition-item::before {
+    content: counter(definition-counter) ".";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+.definition-text {
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--space-xs);
+}
+
+/* ===== Examples (nested inside each definition) ===== */
+
+.examples-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: var(--space-xs);
+}
+
+.example-item {
+    font-size: var(--font-size-sm);
+    font-style: italic;
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    padding-left: var(--space-md);
+    border-left: 2px solid var(--color-border);
+}
+
+/* Single-definition lists still hide the number (from Module 8), but examples always keep their indent */
+.definitions-list:has(.definition-item:only-child) .definition-item {
+    padding-left: 0;
+}
+
+.definitions-list:has(.definition-item:only-child) .definition-item::before {
+    content: "";
+}
+
+.definitions-list:has(.definition-item:only-child) .examples-list {
+    padding-left: var(--space-sm);
+}
+
+/* If a part of speech has only ONE definition, hide the number for cleaner reading */
+.definitions-list:has(.definition-item:only-child) .definition-item {
+    padding-left: 0;
+}
+
+.definitions-list:has(.definition-item:only-child) .definition-item::before {
+    content: "";
+}
+
+/* ===== Pronunciation ===== */
+
+.pronunciation-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-md);
+}
+
+.pronunciation-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.pronunciation-region {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    padding: 1px var(--space-xs);
+    border-radius: var(--radius-sm);
+    min-width: 26px;
+    text-align: center;
+}
+
+.pronunciation-ipa {
+    font-size: var(--font-size-md);
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
+.audio-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg);
+    color: var(--color-primary);
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.audio-btn:not(:disabled):hover {
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary);
+}
+
+.audio-btn:focus-visible {
+    outline: 2px solid var(--color-primary-dark);
+    outline-offset: 2px;
+}
+
+.audio-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

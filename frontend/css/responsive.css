@@ -1,0 +1,114 @@
+/* ===== Container: responsive padding ===== */
+
+@media (max-width: 640px) {
+    :root {
+        --container-padding: 16px;
+    }
+
+    h1 {
+        font-size: var(--font-size-xl);
+    }
+
+    h2 {
+        font-size: var(--font-size-lg);
+    }
+}
+
+/* ===== Header: mobile breakpoint ===== */
+@media (max-width: 640px) {
+    .main-nav {
+        display: none;
+        /* nav links hidden on mobile until menu module wires it up */
+    }
+
+    .menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* ===== Hero: mobile breakpoint ===== */
+@media (max-width: 640px) {
+    .hero {
+        padding: var(--space-xl) var(--container-padding);
+    }
+
+    .hero-heading {
+        font-size: var(--font-size-xl);
+    }
+
+    .hero-description {
+        font-size: var(--font-size-sm);
+    }
+
+    .hero-search {
+        flex-direction: column;
+        align-items: stretch;
+        border-radius: var(--radius-md);
+    }
+
+    .hero-search-btn {
+        width: 100%;
+    }
+}
+
+/* ===== Search component: mobile spacing ===== */
+@media (max-width: 640px) {
+    .search-icon {
+        padding-left: var(--space-xs);
+    }
+
+    .clear-search-btn {
+        margin-right: var(--space-xs);
+    }
+}
+
+/* ===== Suggestions: mobile ===== */
+@media (max-width: 640px) {
+    .suggestions-list {
+        max-height: 200px;
+    }
+}
+
+/* ===== Result card: mobile ===== */
+@media (max-width: 640px) {
+    .result-card {
+        padding: var(--space-lg);
+    }
+
+    .result-word {
+        font-size: var(--font-size-lg);
+    }
+
+    .result-header {
+        flex-wrap: wrap;
+    }
+
+    .result-word-group {
+        gap: var(--space-sm);
+    }
+}
+
+/* ===== Meanings: mobile ===== */
+@media (max-width: 640px) {
+    .meanings-group {
+        gap: var(--space-md);
+    }
+}
+
+/* ===== Examples: mobile ===== */
+@media (max-width: 640px) {
+    .example-item {
+        font-size: 13px;
+        padding-left: var(--space-sm);
+    }
+}
+
+/* ===== Pronunciation: mobile ===== */
+@media (max-width: 640px) {
+    .pronunciation-group {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+}
