@@ -418,7 +418,6 @@
     margin-bottom: var(--space-sm);
 }
 
-
 /* --- Tag lists (synonyms, antonyms, related) --- */
 .tag-list {
     display: flex;
@@ -445,6 +444,10 @@
     padding: var(--space-xs) var(--space-md);
     border-radius: var(--radius-full);
     transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+
+    /* Additive fix to prevent long text overflow */
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .tag:active {
@@ -895,4 +898,63 @@
     left: calc(var(--space-lg) * -1);
     color: var(--color-primary);
     font-weight: 600;
+}
+
+/* ===== Footer ===== */
+
+.site-footer {
+    background-color: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--space-xxl);
+}
+
+.footer-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--container-padding);
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.footer-logo-icon {
+    font-size: 16px;
+}
+
+.footer-brand-name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.footer-nav-list {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.footer-link {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.footer-link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.footer-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+.footer-copyright {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
 }

@@ -72,6 +72,7 @@ function initSearch() {
         suggestionsList.innerHTML = '';
         activeIndex = -1;
         input.setAttribute('aria-expanded', 'false');
+        input.removeAttribute('aria-activedescendant'); // Added line here
     }
 
     function selectSuggestion(word) {
@@ -89,6 +90,9 @@ function initSearch() {
 
         if (activeIndex >= 0 && items[activeIndex]) {
             items[activeIndex].scrollIntoView({ block: 'nearest' });
+            input.setAttribute('aria-activedescendant', items[activeIndex].id);
+        } else {
+            input.removeAttribute('aria-activedescendant');
         }
     }
 

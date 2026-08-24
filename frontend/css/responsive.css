@@ -1,24 +1,57 @@
-/* ===== Container: responsive padding ===== */
+/* =========================================
+   RESPONSIVE DESIGN SYSTEM
+   Mobile:  below 768px
+   Tablet:  768px – 1024px
+   Desktop: above 1024px (default, no media query needed)
+   ========================================= */
 
-@media (max-width: 640px) {
+
+/* =========================================
+   TABLET (768px – 1024px)
+   ========================================= */
+@media (min-width: 768px) and (max-width: 1024px) {
+
+    :root {
+        --container-padding: 24px;
+    }
+
+    /* Header stays in its full desktop layout at tablet width — 
+     there's enough room for the logo + nav + no menu button */
+
+    /* Hero: slightly reduce heading size, content stays centered */
+    .hero-heading {
+        font-size: 2.25rem;
+        /* between base xxl and xl */
+    }
+
+    /* Result card: slightly narrower max-width so it doesn't stretch 
+     awkwardly on medium screens */
+    .result-card,
+    .loading-state,
+    .error-state,
+    .not-found-state {
+        max-width: 90%;
+    }
+
+    .about-container {
+        max-width: 90%;
+    }
+}
+
+
+/* =========================================
+   MOBILE (below 768px)
+   ========================================= */
+@media (max-width: 767px) {
+
     :root {
         --container-padding: 16px;
     }
 
-    h1 {
-        font-size: var(--font-size-xl);
-    }
-
-    h2 {
-        font-size: var(--font-size-lg);
-    }
-}
-
-/* ===== Header: mobile breakpoint ===== */
-@media (max-width: 640px) {
+    /* ----- Header ----- */
     .main-nav {
         display: none;
-        /* nav links hidden on mobile until menu module wires it up */
+        /* nav links hidden until Module 19 adds toggle behavior */
     }
 
     .menu-toggle {
@@ -26,10 +59,8 @@
         align-items: center;
         justify-content: center;
     }
-}
 
-/* ===== Hero: mobile breakpoint ===== */
-@media (max-width: 640px) {
+    /* ----- Hero / Search ----- */
     .hero {
         padding: var(--space-xl) var(--container-padding);
     }
@@ -48,13 +79,6 @@
         border-radius: var(--radius-md);
     }
 
-    .hero-search-btn {
-        width: 100%;
-    }
-}
-
-/* ===== Search component: mobile spacing ===== */
-@media (max-width: 640px) {
     .search-icon {
         padding-left: var(--space-xs);
     }
@@ -62,17 +86,16 @@
     .clear-search-btn {
         margin-right: var(--space-xs);
     }
-}
 
-/* ===== Suggestions: mobile ===== */
-@media (max-width: 640px) {
+    .hero-search-btn {
+        width: 100%;
+    }
+
     .suggestions-list {
         max-height: 200px;
     }
-}
 
-/* ===== Result card: mobile ===== */
-@media (max-width: 640px) {
+    /* ----- Result Card ----- */
     .result-card {
         padding: var(--space-lg);
     }
@@ -88,41 +111,27 @@
     .result-word-group {
         gap: var(--space-sm);
     }
-}
 
-/* ===== Meanings: mobile ===== */
-@media (max-width: 640px) {
-    .meanings-group {
-        gap: var(--space-md);
-    }
-}
-
-/* ===== Examples: mobile ===== */
-@media (max-width: 640px) {
-    .example-item {
-        font-size: 13px;
-        padding-left: var(--space-sm);
-    }
-}
-
-/* ===== Pronunciation: mobile ===== */
-@media (max-width: 640px) {
     .pronunciation-group {
         flex-direction: column;
         gap: var(--space-sm);
     }
-}
 
-/* ===== Loading state: mobile ===== */
-@media (max-width: 640px) {
+    .meanings-group {
+        gap: var(--space-md);
+    }
+
+    .example-item {
+        font-size: 13px;
+        padding-left: var(--space-sm);
+    }
+
+    /* ----- Loading / Error / Not-Found States ----- */
     .loading-state {
         min-height: 240px;
         padding: var(--space-lg);
     }
-}
 
-/* ===== Error state: mobile ===== */
-@media (max-width: 640px) {
     .error-state {
         min-height: 240px;
         padding: var(--space-lg);
@@ -131,10 +140,7 @@
     .error-icon {
         font-size: 32px;
     }
-}
 
-/* ===== Word not found: mobile ===== */
-@media (max-width: 640px) {
     .not-found-state {
         min-height: 280px;
         padding: var(--space-lg);
@@ -147,11 +153,31 @@
     .not-found-search-form {
         flex-direction: column;
     }
-}
 
-/* ===== About page: mobile ===== */
-@media (max-width: 640px) {
+    /* ----- About / Privacy Pages ----- */
     .about-section {
         padding: var(--space-xl) var(--container-padding);
     }
+
+    /* ----- Footer ----- */
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--space-sm);
+    }
+
+    .footer-nav-list {
+        gap: var(--space-md);
+    }
+}
+
+
+/* =========================================
+   GLOBAL SAFETY NET (all sizes)
+   Prevents accidental horizontal scroll from any
+   unexpectedly wide element (long word, long URL, etc.)
+   ========================================= */
+html,
+body {
+    overflow-x: hidden;
 }

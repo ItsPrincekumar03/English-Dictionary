@@ -176,3 +176,21 @@ p {
     white-space: nowrap;
     border: 0;
 }
+
+/* ===== Skip Link (visible only when keyboard-focused) ===== */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding: var(--space-sm) var(--space-md);
+    z-index: 1000;
+    border-radius: 0 0 var(--radius-md) 0;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.skip-link:focus {
+    top: 0;
+}
