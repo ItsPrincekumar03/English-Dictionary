@@ -161,3 +161,28 @@ function initSearch() {
         console.log('Searching for:', searchTerm);
     });
 }
+// "Search again" form inside the Word Not Found state.
+// Mirrors the same capture/validate pattern as the main search form (Module 5).
+function initNotFoundSearch() {
+    const notFoundForm = document.getElementById('not-found-search-form');
+    const notFoundInput = document.getElementById('not-found-search-input');
+
+    if (!notFoundForm || !notFoundInput) {
+        console.error('Not-found search form elements not found in the DOM.');
+        return;
+    }
+
+    notFoundForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const searchTerm = notFoundInput.value.trim();
+
+        if (searchTerm === '') {
+            notFoundInput.focus();
+            return;
+        }
+
+        console.log('Searching for:', searchTerm);
+        hideNotFoundState();
+    });
+}

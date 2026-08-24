@@ -112,3 +112,46 @@
         gap: var(--space-sm);
     }
 }
+
+/* ===== Loading state: mobile ===== */
+@media (max-width: 640px) {
+    .loading-state {
+        min-height: 240px;
+        padding: var(--space-lg);
+    }
+}
+
+/* ===== Error state: mobile ===== */
+@media (max-width: 640px) {
+    .error-state {
+        min-height: 240px;
+        padding: var(--space-lg);
+    }
+
+    .error-icon {
+        font-size: 32px;
+    }
+}
+
+/* ===== Word not found: mobile ===== */
+@media (max-width: 640px) {
+    .not-found-state {
+        min-height: 280px;
+        padding: var(--space-lg);
+    }
+
+    .not-found-icon {
+        font-size: 32px;
+    }
+
+    .not-found-search-form {
+        flex-direction: column;
+    }
+}
+
+/* ===== About page: mobile ===== */
+@media (max-width: 640px) {
+    .about-section {
+        padding: var(--space-xl) var(--container-padding);
+    }
+}

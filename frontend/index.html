@@ -24,8 +24,8 @@
 
             <nav id="main-nav" class="main-nav" aria-label="Main navigation">
                 <ul class="nav-list">
-                    <li><a href="#" class="nav-link" aria-current="page">Home</a></li>
-                    <li><a href="#" class="nav-link">About</a></li>
+                    <li><a href="index.html" class="nav-link" aria-current="page">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
                 </ul>
             </nav>
 
@@ -82,49 +82,54 @@
         </section>
 
         <!-- Word results (definition, audio, synonyms, etc.) will render here -->
-        <!-- Word results (definition, audio, synonyms, etc.) will render here -->
         <section id="result-section" class="result-section">
             <div class="container">
+
+                <!-- ===== Loading State (hidden by default, reusable) ===== -->
+                <div id="loading-state" class="loading-state" role="status" aria-live="polite" hidden>
+                    <div class="spinner" aria-hidden="true"></div>
+                    <p class="loading-text">Searching for "<span id="loading-query">happy</span>"...</p>
+                </div>
+
+                <!-- ===== Error State (hidden by default, reusable) ===== -->
+                <div id="error-state" class="error-state" role="alert" aria-live="assertive" hidden>
+                    <div class="error-icon" aria-hidden="true">⚠️</div>
+                    <p class="error-title">Something went wrong.</p>
+                    <p class="error-message" id="error-message">Please try again.</p>
+                    <button type="button" id="retry-btn" class="btn btn-primary">
+                        Retry
+                    </button>
+                </div>
+
+                <!-- ===== Word Not Found State (hidden by default, reusable) ===== -->
+                <div id="not-found-state" class="not-found-state" role="status" aria-live="polite" hidden>
+                    <div class="not-found-icon" aria-hidden="true">🔍</div>
+                    <p class="not-found-title">Word not found</p>
+                    <p class="not-found-message">
+                        We couldn't find "<span id="not-found-query">xyzabc</span>".
+                        Please check the spelling and try again.
+                    </p>
+
+                    <form id="not-found-search-form" class="not-found-search-form">
+                        <label for="not-found-search-input" class="visually-hidden">Search for a different word</label>
+                        <input type="text" id="not-found-search-input" class="not-found-search-input"
+                            placeholder="Try another word" autocomplete="off">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+
+                    <!-- ===== "Did you mean?" suggestions (prepared, empty, hidden until we have real suggestion data) ===== -->
+                    <div id="did-you-mean" class="did-you-mean" hidden>
+                        <p class="did-you-mean-label">Did you mean:</p>
+                        <ul id="did-you-mean-list" class="tag-list"></ul>
+                    </div>
+                </div>
 
                 <article id="result-card" class="result-card">
 
                     <!-- ===== Word Header ===== -->
                     <div class="result-header">
                         <div class="result-word-group">
-                            <div class="result-header">
-                                <div class="result-word-group">
-                                    <h2 id="result-word" class="result-word">happy</h2>
-                                </div>
-
-                                <button id="favorite-btn" class="favorite-btn" type="button" aria-pressed="false"
-                                    aria-label="Add to favorites">
-                                    <span aria-hidden="true">☆</span>
-                                </button>
-                            </div>
-
-                            <!-- ===== Pronunciation ===== -->
-                            <div id="result-pronunciation" class="pronunciation-group">
-
-                                <div class="pronunciation-item">
-                                    <span class="pronunciation-region">UK</span>
-                                    <span class="pronunciation-ipa">/ˈhæpi/</span>
-                                    <button type="button" class="audio-btn" aria-label="Play UK pronunciation of happy"
-                                        data-audio-url="" disabled>
-                                        <span class="audio-icon" aria-hidden="true">🔊</span>
-                                    </button>
-                                </div>
-
-                                <div class="pronunciation-item">
-                                    <span class="pronunciation-region">US</span>
-                                    <span class="pronunciation-ipa">/ˈhæpi/</span>
-                                    <button type="button" class="audio-btn" aria-label="Play US pronunciation of happy"
-                                        data-audio-url="" disabled>
-                                        <span class="audio-icon" aria-hidden="true">🔊</span>
-                                    </button>
-                                </div>
-
-                            </div>
-                            <p id="result-phonetic" class="result-phonetic">/ˈhæpi/</p>
+                            <h2 id="result-word" class="result-word">happy</h2>
                         </div>
 
                         <button id="favorite-btn" class="favorite-btn" type="button" aria-pressed="false"
@@ -133,7 +138,29 @@
                         </button>
                     </div>
 
-                    <!-- ===== Meanings (grouped by part of speech) ===== -->
+                    <!-- ===== Pronunciation ===== -->
+                    <div id="result-pronunciation" class="pronunciation-group">
+
+                        <div class="pronunciation-item">
+                            <span class="pronunciation-region">UK</span>
+                            <span class="pronunciation-ipa">/ˈhæpi/</span>
+                            <button type="button" class="audio-btn" aria-label="Play UK pronunciation of happy"
+                                data-audio-url="" disabled>
+                                <span class="audio-icon" aria-hidden="true">🔊</span>
+                            </button>
+                        </div>
+
+                        <div class="pronunciation-item">
+                            <span class="pronunciation-region">US</span>
+                            <span class="pronunciation-ipa">/ˈhæpi/</span>
+                            <button type="button" class="audio-btn" aria-label="Play US pronunciation of happy"
+                                data-audio-url="" disabled>
+                                <span class="audio-icon" aria-hidden="true">🔊</span>
+                            </button>
+                        </div>
+
+                    </div>
+
                     <!-- ===== Meanings (grouped by part of speech, each definition can have its own examples) ===== -->
                     <div id="result-meanings" class="meanings-group">
 
@@ -222,15 +249,27 @@
                     <div class="result-block">
                         <h3 class="result-block-title">Related Words</h3>
                         <ul id="result-related" class="tag-list">
-                            <li class="tag tag-related">happiness</li>
-                            <li class="tag tag-related">happily</li>
+                            <li>
+                                <button type="button" class="tag tag-related" data-word="happiness">
+                                    happiness
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="tag tag-related" data-word="happily">
+                                    happily
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="tag tag-related" data-word="unhappy">
+                                    unhappy
+                                </button>
+                            </li>
                         </ul>
                     </div>
 
                 </article>
 
             </div>
-        </section>
         </section>
 
     </main>
