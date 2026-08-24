@@ -1,16 +1,220 @@
 /**
  * Search module
- * Handles: capturing search input, showing mock autocomplete suggestions,
- * keyboard navigation of suggestions, and form submission.
- * No API/backend yet — suggestions come from a hardcoded mock list.
+ * Owns: mock dictionary data, input validation, and the search pipeline
+ * (runSearch → performSearch → success/not-found/error).
+ * Does NOT touch the DOM directly except reading input values —
+ * all rendering is delegated to ui.js functions.
  */
 
-// Temporary mock word list. Will be replaced by a real API call later.
+// ===== Autocomplete mock word list (unchanged from Module 6) =====
+// ===== Autocomplete mock word list (expanded to match the dictionary below) =====
 const MOCK_WORDS = [
-    'computer', 'company', 'complete', 'compare', 'compass',
-    'happy', 'happen', 'hello', 'help', 'here',
-    'search', 'season', 'second', 'secure', 'select'
+    'happy', 'beautiful', 'computer', 'run', 'bank', 'sad'
 ];
+
+// ===== Mock dictionary data =====
+// Shape mirrors the intended MongoDB document structure:
+// { word, pronunciation: { uk, us }, audio: { uk, us }, meanings, synonyms, antonyms, relatedWords }
+const MOCK_DICTIONARY = {
+
+    happy: {
+        word: 'happy',
+        pronunciation: { uk: '/ˈhæpi/', us: '/ˈhæpi/' },
+        audio: { uk: '', us: '' },
+        meanings: [
+            {
+                partOfSpeech: 'adjective',
+                definitions: [
+                    {
+                        text: 'Feeling or showing pleasure, contentment, or satisfaction.',
+                        examples: ['She was happy with the result.', 'He looked happy today.']
+                    },
+                    {
+                        text: 'Having a positive or pleasant nature.',
+                        examples: ['They lived a long and happy life together.']
+                    }
+                ]
+            },
+            {
+                partOfSpeech: 'noun',
+                definitions: [
+                    {
+                        text: 'A feeling of great pleasure or satisfaction (informal use).',
+                        examples: ['Pure happy washed over her.']
+                    }
+                ]
+            }
+        ],
+        synonyms: ['joyful', 'cheerful', 'pleased'],
+        antonyms: ['sad', 'unhappy', 'miserable'],
+        relatedWords: ['happiness', 'happily', 'unhappy']
+    },
+
+    beautiful: {
+        word: 'beautiful',
+        pronunciation: { uk: '/ˈbjuːtɪfʊl/', us: '/ˈbjuːtɪfəl/' },
+        audio: { uk: '', us: '' },
+        meanings: [
+            {
+                partOfSpeech: 'adjective',
+                definitions: [
+                    {
+                        text: 'Pleasing the senses or mind aesthetically.',
+                        examples: ['The sunset was absolutely beautiful.', 'She has a beautiful voice.']
+                    }
+                ]
+            }
+        ],
+        synonyms: ['gorgeous', 'lovely', 'stunning'],
+        antonyms: ['ugly', 'hideous'],
+        relatedWords: ['beauty', 'beautifully']
+    },
+
+    computer: {
+        word: 'computer',
+        pronunciation: { uk: '/kəmˈpjuːtə/', us: '/kəmˈpjuːtər/' },
+        audio: { uk: '', us: '' },
+        meanings: [
+            {
+                partOfSpeech: 'noun',
+                definitions: [
+                    {
+                        text: 'An electronic device for storing and processing data.',
+                        examples: ['She works on her computer every day.']
+                    }
+                ]
+            }
+        ],
+        synonyms: [],
+        antonyms: [],
+        relatedWords: ['computing', 'computerize']
+    },
+
+    run: {
+        word: 'run',
+        pronunciation: { uk: '/rʌn/', us: '/rʌn/' },
+        audio: { uk: '', us: '' },
+        meanings: [
+            {
+                partOfSpeech: 'verb',
+                definitions: [
+                    {
+                        text: 'Move at a speed faster than a walk, never having both feet on the ground at once.',
+                        examples: ['She runs five miles every morning.', 'He ran to catch the bus.']
+                    },
+                    {
+                        text: 'Manage or operate a business, organization, or system.',
+                        examples: ['They run a small bakery downtown.']
+                    }
+                ]
+            },
+            {
+                partOfSpeech: 'noun',
+                definitions: [
+                    {
+                        text: 'An act or spell of running.',
+                        examples: ['She went for a run before breakfast.']
+                    },
+                    {
+                        text: 'A continuous period or sequence of similar events.',
+                        examples: ['The team is on a winning run.']
+                    }
+                ]
+            }
+        ],
+        synonyms: ['sprint', 'jog', 'dash'],
+        antonyms: ['walk', 'stop'],
+        relatedWords: ['runner', 'running', 'rerun']
+    },
+
+    bank: {
+        word: 'bank',
+        pronunciation: { uk: '/bæŋk/', us: '/bæŋk/' },
+        audio: { uk: '', us: '' },
+        meanings: [
+            {
+                partOfSpeech: 'noun',
+                definitions: [
+                    {
+                        text: 'A financial institution that accepts deposits and provides loans.',
+                        examples: ['She deposited the check at the bank.']
+                    },
+                    {
+                        text: 'The land alongside or sloping down to a river or lake.',
+                        examples: ['They sat on the bank and watched the water flow.']
+                    }
+                ]
+            },
+            {
+                partOfSpeech: 'verb',
+                definitions: [
+                    {
+                        text: 'Deposit money into a bank account.',
+                        examples: ['He banks his salary every month.']
+                    }
+                ]
+            }
+        ],
+        synonyms: ['riverside', 'shore'],
+        antonyms: [],
+        relatedWords: ['banking', 'banker']
+    }
+
+};
+// Tracks the most recent search term, so the Retry button can re-attempt it.
+let lastSearchTerm = '';
+
+/**
+ * Simulates an async dictionary lookup.
+ * Resolves with word data, or rejects with { type: 'not-found' } or { type: 'error', message }.
+ * The word "error" is a deliberate manual trigger for testing the error state —
+ * there is no real failure condition without a backend.
+ */
+function performSearch(term) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const key = term.toLowerCase();
+
+            if (key === 'error') {
+                reject({ type: 'error', message: 'Simulated network failure. Please try again.' });
+                return;
+            }
+
+            const data = MOCK_DICTIONARY[key];
+            if (data) {
+                resolve(data);
+            } else {
+                reject({ type: 'not-found' });
+            }
+        }, 700);
+    });
+}
+
+/**
+ * The shared search pipeline. Used by the main form, the not-found form,
+ * and clicking any synonym/antonym/related-word tag.
+ */
+async function runSearch(term) {
+    const query = term.trim();
+    if (query === '') return;
+
+    lastSearchTerm = query;
+    showLoadingState(query);
+
+    try {
+        const data = await performSearch(query);
+        hideLoadingState();
+        renderResult(data);
+    } catch (err) {
+        if (err && err.type === 'not-found') {
+            showNotFoundState(query);
+        } else {
+            showErrorState(err && err.message);
+        }
+    }
+}
+
+// ===== Main search form + autocomplete (Modules 5 & 6, updated to call runSearch) =====
 
 function initSearch() {
     const form = document.getElementById('search-form');
@@ -23,20 +227,16 @@ function initSearch() {
         return;
     }
 
-    // Tracks which suggestion is currently highlighted via keyboard (-1 = none)
     let activeIndex = -1;
 
-    // --- Filtering logic ---
     function getMatches(query) {
         const normalized = query.trim().toLowerCase();
         if (normalized === '') return [];
-
         return MOCK_WORDS.filter(word => word.startsWith(normalized));
     }
 
-    // --- Rendering the dropdown ---
     function renderSuggestions(matches) {
-        suggestionsList.innerHTML = ''; // clear old suggestions
+        suggestionsList.innerHTML = '';
         activeIndex = -1;
 
         if (matches.length === 0) {
@@ -51,7 +251,6 @@ function initSearch() {
             li.setAttribute('role', 'option');
             li.id = `suggestion-${index}`;
 
-            // Clicking a suggestion selects it
             li.addEventListener('click', () => {
                 selectSuggestion(word);
             });
@@ -72,7 +271,7 @@ function initSearch() {
         suggestionsList.innerHTML = '';
         activeIndex = -1;
         input.setAttribute('aria-expanded', 'false');
-        input.removeAttribute('aria-activedescendant'); // Added line here
+        input.removeAttribute('aria-activedescendant');
     }
 
     function selectSuggestion(word) {
@@ -82,7 +281,6 @@ function initSearch() {
         input.focus();
     }
 
-    // --- Keyboard highlight helper ---
     function updateActiveItem(items) {
         items.forEach((item, index) => {
             item.classList.toggle('active', index === activeIndex);
@@ -96,22 +294,18 @@ function initSearch() {
         }
     }
 
-    // --- Input typing: filter + show suggestions ---
     input.addEventListener('input', () => {
         clearBtn.hidden = input.value.length === 0;
-
         const matches = getMatches(input.value);
         renderSuggestions(matches);
     });
 
-    // --- Keyboard navigation ---
     input.addEventListener('keydown', (event) => {
         const items = Array.from(suggestionsList.querySelectorAll('.suggestion-item'));
-
         if (suggestionsList.hidden || items.length === 0) return;
 
         if (event.key === 'ArrowDown') {
-            event.preventDefault(); // stop cursor from moving inside the input
+            event.preventDefault();
             activeIndex = (activeIndex + 1) % items.length;
             updateActiveItem(items);
         }
@@ -123,7 +317,6 @@ function initSearch() {
         }
 
         if (event.key === 'Enter' && activeIndex >= 0) {
-            // A suggestion is highlighted — select it instead of submitting the form
             event.preventDefault();
             selectSuggestion(items[activeIndex].textContent);
         }
@@ -133,7 +326,6 @@ function initSearch() {
         }
     });
 
-    // --- Close suggestions when clicking outside the search area ---
     document.addEventListener('click', (event) => {
         const isClickInsideSearch = form.contains(event.target) || suggestionsList.contains(event.target);
         if (!isClickInsideSearch) {
@@ -141,7 +333,6 @@ function initSearch() {
         }
     });
 
-    // --- Clear button ---
     clearBtn.addEventListener('click', () => {
         input.value = '';
         clearBtn.hidden = true;
@@ -149,24 +340,22 @@ function initSearch() {
         input.focus();
     });
 
-    // --- Form submit ---
     form.addEventListener('submit', (event) => {
         event.preventDefault();
-
-        const searchTerm = input.value.trim();
         closeSuggestions();
 
+        const searchTerm = input.value.trim();
         if (searchTerm === '') {
-            console.warn('Search term is empty — nothing to search.');
             input.focus();
             return;
         }
 
-        console.log('Searching for:', searchTerm);
+        runSearch(searchTerm);
     });
 }
-// "Search again" form inside the Word Not Found state.
-// Mirrors the same capture/validate pattern as the main search form (Module 5).
+
+// ===== "Search again" form inside the Word Not Found state (Module 15, updated) =====
+
 function initNotFoundSearch() {
     const notFoundForm = document.getElementById('not-found-search-form');
     const notFoundInput = document.getElementById('not-found-search-input');
@@ -180,13 +369,11 @@ function initNotFoundSearch() {
         event.preventDefault();
 
         const searchTerm = notFoundInput.value.trim();
-
         if (searchTerm === '') {
             notFoundInput.focus();
             return;
         }
 
-        console.log('Searching for:', searchTerm);
-        hideNotFoundState();
+        runSearch(searchTerm);
     });
 }
