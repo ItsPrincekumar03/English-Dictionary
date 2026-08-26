@@ -5,9 +5,65 @@
  * Does NOT decide what data is correct — only displays what it's given.
  */
 
-// ===== State toggling (Modules 13, 14, 15, 18) =====
+// ===== Audio playback (Module 23) =====
+
+// One reusable Audio instance shared by both UK/US buttons, so repeated
+// clicks or switching regions never stack up multiple overlapping sounds.
+let pronunciationAudio = null;
+
+/**
+ * Validates a URL before it's ever assigned as an audio source.
+ * Backend data is external input — this blocks unexpected schemes
+ * (e.g. javascript:) or malformed values from reaching the DOM.
+ */
+function isSafeAudioUrl(url) {
+    if (typeof url !== 'string' || url.trim() === '') return false;
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Plays a pronunciation clip. Only ever invoked from a click handler,
+ * so it never runs automatically — browser autoplay restrictions
+ * are never a concern here.
+ */
+function playPronunciationAudio(url) {
+    if (!isSafeAudioUrl(url)) return;
+
+    if (!pronunciationAudio) {
+        pronunciationAudio = new Audio();
+    }
+
+    // Stop anything currently playing before starting the new clip,
+    // so quick UK → US clicks don't overlap.
+    pronunciationAudio.pause();
+    pronunciationAudio.currentTime = 0;
+    pronunciationAudio.src = url;
+
+    // play() returns a Promise that rejects on failure (broken file,
+    // network issue, decode error). Catch it so it never surfaces as
+    // a raw browser error or unhandled rejection.
+    pronunciationAudio.play().catch((err) => {
+        console.error('[ui] Audio playback failed:', err);
+    });
+}
+
+/** Stops any in-progress pronunciation playback. */
+function stopPronunciationAudio() {
+    if (pronunciationAudio) {
+        pronunciationAudio.pause();
+    }
+}
+
+// ===== State toggling (Modules 13, 14, 15, 18, 23) =====
 
 function showLoadingState(query) {
+    stopPronunciationAudio(); // Stop any audio from the previous word
+
     const loadingState = document.getElementById('loading-state');
     const resultCard = document.getElementById('result-card');
     const loadingQuery = document.getElementById('loading-query');
@@ -117,7 +173,7 @@ function hideNotFoundState() {
     resultCard.hidden = false;
 }
 
-// ===== Result rendering (new in Module 20) =====
+// ===== Result rendering (Modules 20 & 21) =====
 
 /**
  * Fills the existing result card markup with real word data.
@@ -220,8 +276,10 @@ function renderMeanings(meanings) {
 
 /**
  * Builds a tag list (synonyms, antonyms, or related words).
- * Hides the whole surrounding .result-block if there's no data for it,
+ * Hides the whole surrounding .result-block if there's no valid data,
  * rather than showing an empty labeled section.
+ * Filters out any non-string or empty entries so malformed API data
+ * (null, numbers, empty strings) can never reach the DOM.
  */
 function renderTagList(containerId, words, tagClass) {
     const container = document.getElementById(containerId);
@@ -230,14 +288,20 @@ function renderTagList(containerId, words, tagClass) {
     const wrapper = container.closest('.result-block');
     container.innerHTML = '';
 
-    if (!words || words.length === 0) {
+    // Defensive validation: only keep genuine, non-empty strings.
+    // Handles undefined, null, non-array values, and mixed-type arrays.
+    const validWords = Array.isArray(words)
+        ? words.filter(word => typeof word === 'string' && word.trim() !== '')
+        : [];
+
+    if (validWords.length === 0) {
         if (wrapper) wrapper.hidden = true;
         return;
     }
 
     if (wrapper) wrapper.hidden = false;
 
-    words.forEach(word => {
+    validWords.forEach(word => {
         const li = document.createElement('li');
         const button = document.createElement('button');
         button.type = 'button';

@@ -19,6 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Audio button playback (Module 23)
+    // Listens for clicks on any enabled pronunciation audio button.
+    document.addEventListener('click', (event) => {
+        const audioBtn = event.target.closest('.audio-btn');
+        if (!audioBtn || audioBtn.disabled) return;
+
+        playPronunciationAudio(audioBtn.dataset.audioUrl);
+    });
+
     // Clicking any synonym/antonym/related-word tag anywhere on the page
     // triggers a brand new search for that word, reusing the exact same
     // pipeline as the main search form.
