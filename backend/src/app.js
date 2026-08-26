@@ -1,25 +1,14 @@
 // src/app.js
 
 const express = require('express');
+const notFound = require('./middleware/notFound');
+const errorHandler = require('./middleware/errorHandler');
+const wordRoutes = require('./routes/wordRoutes');
 
-// Create the Express application instance.
-// This object represents your entire web server's behavior —
-// middleware, routes, everything gets attached to it.
 const app = express();
 
-// Built-in middleware: parses incoming requests with JSON bodies
-// and makes the result available as req.body.
-// We don't have any POST/PUT routes yet, but this is standard
-// to set up from the very beginning — every Express API needs it
-// sooner or later, and it's harmless to have on now.
 app.use(express.json());
 
-// Health-check endpoint.
-// Purpose: a simple way to verify the server is up and responding,
-// without touching any real logic (routes, controllers, services, data).
-// This is a common convention in real backend projects — deployment
-// tools and monitoring services often ping a /health endpoint
-// to check if the server is alive.
 app.get('/api/health', (req, res) => {
     res.status(200).json({
         success: true,
@@ -27,6 +16,16 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Export the configured app so server.js can import it and
-// actually start listening on a port.
+// Mount the word router at /api/words.
+// Any request starting with /api/words is handed off to wordRoutes,
+// which then matches the remaining path against its own routes
+// (in this case, /:word).
+app.use('/api/words', wordRoutes);
+
+// notFound must come AFTER all real routes.
+app.use(notFound);
+
+// errorHandler must be registered LAST.
+app.use(errorHandler);
+
 module.exports = app;
