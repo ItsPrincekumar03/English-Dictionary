@@ -234,6 +234,11 @@ async function runSearch(term) {
         if (err && err.type === 'not-found') {
             showNotFoundState(query);
         } else {
+            // network / server / client / invalid-response, and anything
+            // unrecognized, all render through the general error UI. Each
+            // type already carries its own safe, specific message from
+            // api.js — search.js doesn't need to know the details, just
+            // that this isn't the not-found case.
             showErrorState(err && err.message);
         }
     } finally {
