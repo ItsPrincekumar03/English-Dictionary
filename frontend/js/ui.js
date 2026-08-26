@@ -130,15 +130,15 @@ function showErrorState(message) {
 
 function hideErrorState() {
     const errorState = document.getElementById('error-state');
-    const resultCard = document.getElementById('result-card');
 
-    if (!errorState || !resultCard) {
+    if (!errorState) {
         console.error('Error state elements not found in the DOM.');
         return;
     }
 
+    // Do not reveal the result card here. Retry immediately starts a new
+    // search, and showing the previous result would flash stale content.
     errorState.hidden = true;
-    resultCard.hidden = false;
 }
 
 function showNotFoundState(query) {
@@ -205,7 +205,7 @@ function renderResult(data) {
         if (ipaEl) ipaEl.textContent = info.ipa || '';
 
         if (audioBtn) {
-            if (info.audioUrl) {
+            if (isSafeAudioUrl(info.audioUrl)) {
                 audioBtn.dataset.audioUrl = info.audioUrl;
                 audioBtn.disabled = false;
             } else {
@@ -230,6 +230,8 @@ function renderMeanings(meanings) {
     const container = document.getElementById('result-meanings');
     if (!container) return;
     container.innerHTML = '';
+
+    if (!Array.isArray(meanings)) return;
 
     meanings.forEach(meaning => {
         const block = document.createElement('section');

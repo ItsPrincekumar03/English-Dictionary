@@ -25,17 +25,36 @@ async function getWordByName(word) {
         throw error;
     }
 
+    const trimmedWord = word.trim();
+
+    // Prevent unnecessarily large search strings
+    if (trimmedWord.length > 100) {
+        const error = new Error('Search term is too long');
+        error.statusCode = 400;
+        throw error;
+    }
+
+    // Validate allowed characters: letters, spaces, hyphens, and apostrophes.
+    // Rejects HTML (<script>), special symbols (!, @, $), and pure numbers.
+    const validWordRegex = /^[a-zA-Z\s\-']+$/;
+    if (!validWordRegex.test(trimmedWord)) {
+        const error = new Error('Invalid search term');
+        error.statusCode = 400;
+        throw error;
+    }
+
     // Normalize the word the same way the schema does (lowercase, trimmed).
     // This isn't strictly required since Mongoose's `lowercase: true` on the
     // schema would normalize it anyway during a save, but for a QUERY,
     // we must normalize manually — Mongoose schema transforms only apply
     // on save, not automatically on every query filter.
-    const normalizedWord = word.trim().toLowerCase();
+    const normalizedWord = trimmedWord.toLowerCase();
 
     // Query MongoDB through the Word model.
-    // findOne returns the matching document, or null if nothing matches —
-    // which is exactly the contract we want to expose to callers.
-    const result = await Word.findOne({ word: normalizedWord });
+    // .select('-__v -createdAt -updatedAt') removes fields the frontend does not need,
+    // reducing payload size slightly and preventing unnecessary data transfer.
+    const result = await Word.findOne({ word: normalizedWord })
+                             .select('-__v -createdAt -updatedAt');
 
     return result; // either a Word document, or null
 }

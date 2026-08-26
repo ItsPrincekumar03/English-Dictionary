@@ -125,12 +125,12 @@
                     </div>
                 </div>
 
-                <article id="result-card" class="result-card">
+                <article id="result-card" class="result-card" hidden>
 
                     <!-- ===== Word Header ===== -->
                     <div class="result-header">
                         <div class="result-word-group">
-                            <h2 id="result-word" class="result-word">happy</h2>
+                            <h2 id="result-word" class="result-word"></h2>
                         </div>
 
                         <button id="favorite-btn" class="favorite-btn" type="button" aria-pressed="false"
@@ -144,8 +144,8 @@
 
                         <div class="pronunciation-item">
                             <span class="pronunciation-region">UK</span>
-                            <span class="pronunciation-ipa">/ˈhæpi/</span>
-                            <button type="button" class="audio-btn" aria-label="Play UK pronunciation of happy"
+                            <span class="pronunciation-ipa"></span>
+                            <button type="button" class="audio-btn" aria-label="Play UK pronunciation"
                                 data-audio-url="" disabled>
                                 <span class="audio-icon" aria-hidden="true">🔊</span>
                             </button>
@@ -153,8 +153,8 @@
 
                         <div class="pronunciation-item">
                             <span class="pronunciation-region">US</span>
-                            <span class="pronunciation-ipa">/ˈhæpi/</span>
-                            <button type="button" class="audio-btn" aria-label="Play US pronunciation of happy"
+                            <span class="pronunciation-ipa"></span>
+                            <button type="button" class="audio-btn" aria-label="Play US pronunciation"
                                 data-audio-url="" disabled>
                                 <span class="audio-icon" aria-hidden="true">🔊</span>
                             </button>
@@ -164,63 +164,12 @@
 
                     <!-- ===== Meanings (grouped by part of speech, each definition can have its own examples) ===== -->
                     <div id="result-meanings" class="meanings-group">
-
-                        <section class="meaning-block">
-                            <h3 class="pos-tag">adjective</h3>
-
-                            <ol class="definitions-list">
-                                <li class="definition-item">
-                                    <p class="definition-text">Feeling or showing pleasure, contentment, or
-                                        satisfaction.</p>
-                                    <ul class="examples-list">
-                                        <li class="example-item">"She was happy with the result."</li>
-                                        <li class="example-item">"He looked happy today."</li>
-                                    </ul>
-                                </li>
-                                <li class="definition-item">
-                                    <p class="definition-text">Having a positive or pleasant nature.</p>
-                                    <ul class="examples-list">
-                                        <li class="example-item">"They lived a long and happy life together."</li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </section>
-
-                        <section class="meaning-block">
-                            <h3 class="pos-tag">noun</h3>
-
-                            <ol class="definitions-list">
-                                <li class="definition-item">
-                                    <p class="definition-text">A feeling of great pleasure or satisfaction (informal
-                                        use).</p>
-                                    <ul class="examples-list">
-                                        <li class="example-item">"Pure happy washed over her."</li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </section>
-
                     </div>
 
                     <!-- ===== Synonyms ===== -->
                     <div class="result-block">
                         <h3 class="result-block-title">Synonyms</h3>
                         <ul id="result-synonyms" class="tag-list">
-                            <li>
-                                <button type="button" class="tag tag-synonym" data-word="joyful">
-                                    joyful
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="tag tag-synonym" data-word="cheerful">
-                                    cheerful
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="tag tag-synonym" data-word="pleased">
-                                    pleased
-                                </button>
-                            </li>
                         </ul>
                     </div>
 
@@ -228,21 +177,6 @@
                     <div class="result-block">
                         <h3 class="result-block-title">Antonyms</h3>
                         <ul id="result-antonyms" class="tag-list">
-                            <li>
-                                <button type="button" class="tag tag-antonym" data-word="sad">
-                                    sad
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="tag tag-antonym" data-word="unhappy">
-                                    unhappy
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="tag tag-antonym" data-word="miserable">
-                                    miserable
-                                </button>
-                            </li>
                         </ul>
                     </div>
 
@@ -250,21 +184,6 @@
                     <div class="result-block">
                         <h3 class="result-block-title">Related Words</h3>
                         <ul id="result-related" class="tag-list">
-                            <li>
-                                <button type="button" class="tag tag-related" data-word="happiness">
-                                    happiness
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="tag tag-related" data-word="happily">
-                                    happily
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="tag tag-related" data-word="unhappy">
-                                    unhappy
-                                </button>
-                            </li>
                         </ul>
                     </div>
 

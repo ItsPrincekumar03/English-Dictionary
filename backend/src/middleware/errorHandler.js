@@ -1,5 +1,7 @@
 // src/middleware/errorHandler.js
 
+const logger = require('../utils/logger');
+
 /**
  * Centralized error-handling middleware.
  * Express recognizes this as an error handler specifically because
@@ -10,16 +12,30 @@
 function errorHandler(err, req, res, next) {
     // Log the full error server-side, for developers only.
     // This NEVER goes to the client — it's for your terminal/logs.
-    console.error('❌ Error:', err.message);
-    if (process.env.NODE_ENV !== 'production') {
-        console.error(err.stack);
+    const statusCode = err.statusCode || 500;
+    
+    const logContext = { 
+        message: err.message, 
+        statusCode,
+        url: req.originalUrl,
+        method: req.method,
+        id: req.id
+    };
+
+    if (statusCode >= 500) {
+        logger.error('API Error', logContext);
+    } else {
+        logger.warn('Client Error', logContext);
+    }
+    
+    if (process.env.NODE_ENV !== 'production' && statusCode === 500) {
+        logger.debug('Stack trace:', { stack: err.stack });
     }
 
     // Default to 500 (unexpected server error) unless the error
     // explicitly carries a more specific status code — e.g. the
     // 400 thrown by wordService for empty input (Module 7).
-    const statusCode = err.statusCode || 500;
-
+    
     // Decide what message to actually send the client.
     // For genuine 500s (unexpected, unplanned failures), we deliberately
     // hide the real error message from the client and send a generic one —

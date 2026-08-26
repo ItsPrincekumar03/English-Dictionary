@@ -1,6 +1,7 @@
 // src/config/database.js
 
 const mongoose = require('mongoose');
+const logger = require('../utils/logger');
 
 /**
  * Connects to MongoDB using the URI defined in environment variables.
@@ -14,7 +15,7 @@ async function connectDB() {
     // Failing fast here with a clear message is much easier to debug
     // than letting mongoose.connect() fail with a cryptic error later.
     if (!mongoURI) {
-        console.error('❌ MONGODB_URI is not defined in environment variables.');
+        logger.error('MONGODB_URI is not defined in environment variables.');
         process.exit(1);
     }
 
@@ -23,12 +24,12 @@ async function connectDB() {
 
         // Deliberately NOT logging mongoURI itself — it may contain
         // a username/password. Only confirm success generically.
-        console.log('✅ MongoDB connected successfully');
+        logger.info('MongoDB connected successfully');
     } catch (error) {
         // Log only the error message, not the full error object,
         // to avoid accidentally leaking connection details that
         // some drivers include in error messages/stack traces.
-        console.error('❌ MongoDB connection failed:', error.message);
+        logger.error('MongoDB connection failed', { error: error.message });
         process.exit(1);
     }
 }

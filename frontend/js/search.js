@@ -1,215 +1,16 @@
 /**
  * Search module
- * Owns: mock dictionary data, input validation, and the search pipeline
+ * Owns: input validation, and the search pipeline
  * (runSearch → searchWord → success/not-found/error).
- * Does NOT touch the DOM directly except reading input values —
  * all rendering is delegated to ui.js functions.
  */
 
-// ===== Autocomplete mock word list (unchanged from Module 6) =====
-// ===== Autocomplete mock word list (expanded to match the dictionary below) =====
-const MOCK_WORDS = [
-    'happy', 'beautiful', 'computer', 'run', 'bank', 'sad'
-];
-
-// ===== Mock dictionary data =====
-// Shape mirrors the intended MongoDB document structure:
-// { word, pronunciation: { uk, us }, audio: { uk, us }, meanings, synonyms, antonyms, relatedWords }
-const MOCK_DICTIONARY = {
-
-    happy: {
-        word: 'happy',
-        pronunciation: { uk: '/ˈhæpi/', us: '/ˈhæpi/' },
-        audio: { uk: '', us: '' },
-        meanings: [
-            {
-                partOfSpeech: 'adjective',
-                definitions: [
-                    {
-                        text: 'Feeling or showing pleasure, contentment, or satisfaction.',
-                        examples: ['She was happy with the result.', 'He looked happy today.']
-                    },
-                    {
-                        text: 'Having a positive or pleasant nature.',
-                        examples: ['They lived a long and happy life together.']
-                    }
-                ]
-            },
-            {
-                partOfSpeech: 'noun',
-                definitions: [
-                    {
-                        text: 'A feeling of great pleasure or satisfaction (informal use).',
-                        examples: ['Pure happy washed over her.']
-                    }
-                ]
-            }
-        ],
-        synonyms: ['joyful', 'cheerful', 'pleased'],
-        antonyms: ['sad', 'unhappy', 'miserable'],
-        relatedWords: ['happiness', 'happily', 'unhappy']
-    },
-    sad: {
-        word: 'sad',
-        pronunciation: { uk: '/sæd/', us: '/sæd/' },
-        audio: { uk: '', us: '' },
-        meanings: [
-            {
-                partOfSpeech: 'adjective',
-                definitions: [
-                    {
-                        text: 'Feeling or showing sorrow; unhappy.',
-                        examples: ['She felt sad after the news.']
-                    }
-                ]
-            }
-        ],
-        synonyms: ['unhappy', 'sorrowful', 'downcast'],
-        antonyms: ['happy', 'joyful'],
-        relatedWords: ['sadness', 'sadly']
-    },
-
-    beautiful: {
-        word: 'beautiful',
-        pronunciation: { uk: '/ˈbjuːtɪfʊl/', us: '/ˈbjuːtɪfəl/' },
-        audio: { uk: '', us: '' },
-        meanings: [
-            {
-                partOfSpeech: 'adjective',
-                definitions: [
-                    {
-                        text: 'Pleasing the senses or mind aesthetically.',
-                        examples: ['The sunset was absolutely beautiful.', 'She has a beautiful voice.']
-                    }
-                ]
-            }
-        ],
-        synonyms: ['gorgeous', 'lovely', 'stunning'],
-        antonyms: ['ugly', 'hideous'],
-        relatedWords: ['beauty', 'beautifully']
-    },
-
-    computer: {
-        word: 'computer',
-        pronunciation: { uk: '/kəmˈpjuːtə/', us: '/kəmˈpjuːtər/' },
-        audio: { uk: '', us: '' },
-        meanings: [
-            {
-                partOfSpeech: 'noun',
-                definitions: [
-                    {
-                        text: 'An electronic device for storing and processing data.',
-                        examples: ['She works on her computer every day.']
-                    }
-                ]
-            }
-        ],
-        synonyms: [],
-        antonyms: [],
-        relatedWords: ['computing', 'computerize']
-    },
-
-    run: {
-        word: 'run',
-        pronunciation: { uk: '/rʌn/', us: '/rʌn/' },
-        audio: { uk: '', us: '' },
-        meanings: [
-            {
-                partOfSpeech: 'verb',
-                definitions: [
-                    {
-                        text: 'Move at a speed faster than a walk, never having both feet on the ground at once.',
-                        examples: ['She runs five miles every morning.', 'He ran to catch the bus.']
-                    },
-                    {
-                        text: 'Manage or operate a business, organization, or system.',
-                        examples: ['They run a small bakery downtown.']
-                    }
-                ]
-            },
-            {
-                partOfSpeech: 'noun',
-                definitions: [
-                    {
-                        text: 'An act or spell of running.',
-                        examples: ['She went for a run before breakfast.']
-                    },
-                    {
-                        text: 'A continuous period or sequence of similar events.',
-                        examples: ['The team is on a winning run.']
-                    }
-                ]
-            }
-        ],
-        synonyms: ['sprint', 'jog', 'dash'],
-        antonyms: ['walk', 'stop'],
-        relatedWords: ['runner', 'running', 'rerun']
-    },
-
-    bank: {
-        word: 'bank',
-        pronunciation: { uk: '/bæŋk/', us: '/bæŋk/' },
-        audio: { uk: '', us: '' },
-        meanings: [
-            {
-                partOfSpeech: 'noun',
-                definitions: [
-                    {
-                        text: 'A financial institution that accepts deposits and provides loans.',
-                        examples: ['She deposited the check at the bank.']
-                    },
-                    {
-                        text: 'The land practical alongside or sloping down to a river or lake.',
-                        examples: ['They sat on the bank and watched the water flow.']
-                    }
-                ]
-            },
-            {
-                partOfSpeech: 'verb',
-                definitions: [
-                    {
-                        text: 'Deposit money into a bank account.',
-                        examples: ['He banks his salary every month.']
-                    }
-                ]
-            }
-        ],
-        synonyms: ['riverside', 'shore'],
-        antonyms: [],
-        relatedWords: ['banking', 'banker']
-    }
-
-};
-
 // Tracks the most recent search term, so the Retry button can re-attempt it.
 let lastSearchTerm = '';
-let isSearching = false; // Prevents overlapping/duplicate searches
+// Increments on every runSearch so a slower, older response cannot
+// overwrite a newer search (or leave loading stuck after a superseded request).
+let searchRequestId = 0;
 
-/**
- * Simulates an async dictionary lookup.
- * Resolves with word data, or rejects with { type: 'not-found' } or { type: 'error', message }.
- * The word "error" is a deliberate manual trigger for testing the error state —
- * there is no real failure condition without a backend.
- */
-function performSearch(term) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const key = term.toLowerCase();
-
-            if (key === 'error') {
-                reject({ type: 'error', message: 'Simulated network failure. Please try again.' });
-                return;
-            }
-
-            const data = MOCK_DICTIONARY[key];
-            if (data) {
-                resolve(data);
-            } else {
-                reject({ type: 'not-found' });
-            }
-        }, 700);
-    });
-}
 
 /**
  * The shared search pipeline. Used by the main form, the not-found form,
@@ -219,18 +20,17 @@ async function runSearch(term) {
     const query = term.trim();
     if (query === '') return;
 
-    // Guard against duplicate/overlapping searches
-    if (isSearching) return;
-
-    isSearching = true;
+    const requestId = ++searchRequestId;
     lastSearchTerm = query;
     setSearchControlsDisabled(true);
     showLoadingState(query);
 
     try {
         const data = await searchWord(query);
+        if (requestId !== searchRequestId) return;
         renderResult(data);
     } catch (err) {
+        if (requestId !== searchRequestId) return;
         if (err && err.type === 'not-found') {
             showNotFoundState(query);
         } else {
@@ -242,10 +42,10 @@ async function runSearch(term) {
             showErrorState(err && err.message);
         }
     } finally {
-        // Runs regardless of success, not-found, or error
+        // Only the latest search may clear loading / re-enable controls.
+        if (requestId !== searchRequestId) return;
         hideLoadingState();
         setSearchControlsDisabled(false);
-        isSearching = false;
     }
 }
 
@@ -265,9 +65,7 @@ function initSearch() {
     let activeIndex = -1;
 
     function getMatches(query) {
-        const normalized = query.trim().toLowerCase();
-        if (normalized === '') return [];
-        return MOCK_WORDS.filter(word => word.startsWith(normalized));
+        return [];
     }
 
     function renderSuggestions(matches) {
