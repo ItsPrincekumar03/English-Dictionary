@@ -242,18 +242,3 @@ function resetFavoriteButton() {
     const icon = favBtn.querySelector('span');
     if (icon) icon.textContent = '☆';
 }
-
-// ===== Retry button (Module 14, updated to re-attempt the last search) =====
-
-document.addEventListener('DOMContentLoaded', () => {
-    const retryBtn = document.getElementById('retry-btn');
-
-    if (retryBtn) {
-        retryBtn.addEventListener('click', () => {
-            hideErrorState();
-            if (typeof lastSearchTerm !== 'undefined' && lastSearchTerm) {
-                runSearch(lastSearchTerm);
-            }
-        });
-    }
-});

@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearch();
     initNotFoundSearch();
 
+    // Retry button: re-attempts the last search
+    const retryBtn = document.getElementById('retry-btn');
+    if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+            hideErrorState();
+            if (typeof lastSearchTerm !== 'undefined' && lastSearchTerm) {
+                runSearch(lastSearchTerm);
+            }
+        });
+    }
+
     // Clicking any synonym/antonym/related-word tag anywhere on the page
     // triggers a brand new search for that word, reusing the exact same
     // pipeline as the main search form.

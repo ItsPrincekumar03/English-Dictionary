@@ -351,12 +351,6 @@
     color: var(--color-text);
 }
 
-.result-phonetic {
-    font-size: var(--font-size-md);
-    color: var(--color-text-muted);
-    font-style: italic;
-}
-
 /* --- Favorite button --- */
 .favorite-btn {
     display: flex;
@@ -388,16 +382,17 @@
     outline-offset: 2px;
 }
 
-/* --- Part of speech tag --- */
+/* --- Part of speech tag (Consolidated) --- */
 .pos-tag {
     display: inline-block;
+    width: fit-content;
     font-size: var(--font-size-sm);
     font-weight: 500;
+    font-style: italic;
     color: var(--color-primary-dark);
     background-color: var(--color-primary-light);
     padding: 2px var(--space-sm);
     border-radius: var(--radius-sm);
-    margin-bottom: var(--space-lg);
 }
 
 /* --- Content blocks (Meaning, Examples, etc.) --- */
@@ -508,18 +503,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
-}
-
-.meaning-block .pos-tag {
-    display: inline-block;
-    width: fit-content;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    font-style: italic;
-    color: var(--color-primary-dark);
-    background-color: var(--color-primary-light);
-    padding: 2px var(--space-sm);
-    border-radius: var(--radius-sm);
 }
 
 .definitions-list {

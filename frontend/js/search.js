@@ -49,6 +49,25 @@ const MOCK_DICTIONARY = {
         antonyms: ['sad', 'unhappy', 'miserable'],
         relatedWords: ['happiness', 'happily', 'unhappy']
     },
+    sad: {
+        word: 'sad',
+        pronunciation: { uk: '/sæd/', us: '/sæd/' },
+        audio: { uk: '', us: '' },
+        meanings: [
+            {
+                partOfSpeech: 'adjective',
+                definitions: [
+                    {
+                        text: 'Feeling or showing sorrow; unhappy.',
+                        examples: ['She felt sad after the news.']
+                    }
+                ]
+            }
+        ],
+        synonyms: ['unhappy', 'sorrowful', 'downcast'],
+        antonyms: ['happy', 'joyful'],
+        relatedWords: ['sadness', 'sadly']
+    },
 
     beautiful: {
         word: 'beautiful',
