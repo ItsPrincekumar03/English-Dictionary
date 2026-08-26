@@ -5,7 +5,7 @@
  * Does NOT decide what data is correct — only displays what it's given.
  */
 
-// ===== State toggling (Modules 13, 14, 15 — unchanged) =====
+// ===== State toggling (Modules 13, 14, 15, 18) =====
 
 function showLoadingState(query) {
     const loadingState = document.getElementById('loading-state');
@@ -28,15 +28,29 @@ function showLoadingState(query) {
 
 function hideLoadingState() {
     const loadingState = document.getElementById('loading-state');
-    const resultCard = document.getElementById('result-card');
 
-    if (!loadingState || !resultCard) {
-        console.error('Loading state elements not found in the DOM.');
+    if (!loadingState) {
+        console.error('Loading state element not found in the DOM.');
         return;
     }
 
     loadingState.hidden = true;
-    resultCard.hidden = false;
+    // NOTE: does NOT touch resultCard visibility anymore. Revealing the
+    // result card is renderResult()'s responsibility. This keeps
+    // hideLoadingState() safe to call unconditionally in a finally block.
+}
+
+/**
+ * Disables or re-enables the search input and button.
+ * Used to prevent duplicate/overlapping searches while a request is
+ * already in progress.
+ */
+function setSearchControlsDisabled(disabled) {
+    const input = document.getElementById('search-input');
+    const button = document.getElementById('search-btn');
+
+    if (input) input.disabled = disabled;
+    if (button) button.disabled = disabled;
 }
 
 function showErrorState(message) {

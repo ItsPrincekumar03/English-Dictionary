@@ -1,7 +1,7 @@
 /**
  * Search module
  * Owns: mock dictionary data, input validation, and the search pipeline
- * (runSearch → performSearch → success/not-found/error).
+ * (runSearch → searchWord → success/not-found/error).
  * Does NOT touch the DOM directly except reading input values —
  * all rendering is delegated to ui.js functions.
  */
@@ -159,7 +159,7 @@ const MOCK_DICTIONARY = {
                         examples: ['She deposited the check at the bank.']
                     },
                     {
-                        text: 'The land alongside or sloping down to a river or lake.',
+                        text: 'The land practical alongside or sloping down to a river or lake.',
                         examples: ['They sat on the bank and watched the water flow.']
                     }
                 ]
@@ -180,8 +180,10 @@ const MOCK_DICTIONARY = {
     }
 
 };
+
 // Tracks the most recent search term, so the Retry button can re-attempt it.
 let lastSearchTerm = '';
+let isSearching = false; // Prevents overlapping/duplicate searches
 
 /**
  * Simulates an async dictionary lookup.
@@ -217,12 +219,16 @@ async function runSearch(term) {
     const query = term.trim();
     if (query === '') return;
 
+    // Guard against duplicate/overlapping searches
+    if (isSearching) return;
+
+    isSearching = true;
     lastSearchTerm = query;
+    setSearchControlsDisabled(true);
     showLoadingState(query);
 
     try {
-        const data = await performSearch(query);
-        hideLoadingState();
+        const data = await searchWord(query);
         renderResult(data);
     } catch (err) {
         if (err && err.type === 'not-found') {
@@ -230,6 +236,11 @@ async function runSearch(term) {
         } else {
             showErrorState(err && err.message);
         }
+    } finally {
+        // Runs regardless of success, not-found, or error
+        hideLoadingState();
+        setSearchControlsDisabled(false);
+        isSearching = false;
     }
 }
 
