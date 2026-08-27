@@ -97,3 +97,22 @@ GET http://localhost:5000/api/words/happy
 
 ## Current Project Status
 Phase 9 completed. The application is fully integrated, stable, and running via MongoDB with zero frontend mock data.
+
+## Deployment Architecture
+
+The application is designed to be deployed using a decoupled architecture:
+
+**Frontend (Static Hosting)**
+- The rontend directory contains pure static assets (HTML/CSS/JS) requiring no build step.
+- Designed for deployment on CDN-backed static hosts (e.g., Vercel, Netlify, Cloudflare Pages).
+- The API URL dynamically detects the environment and switches to the production backend automatically.
+
+**Backend (Node.js/Express)**
+- The Node.js API should be deployed to a cloud platform (e.g., Render, Railway).
+- Requires environment variables: `NODE_ENV`, `MONGODB_URI`, `ALLOWED_ORIGINS`, and `PORT`.
+
+**Database (MongoDB Atlas)**
+- Production database should be hosted on MongoDB Atlas.
+- Only the backend communicates securely with the database using the `MONGODB_URI` secret.
+
+See \DEPLOYMENT.md\ for complete instructions on production setup and configuration.

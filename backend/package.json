@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "test": "cross-env NODE_ENV=test RATE_LIMIT_MAX_REQUESTS=100 ALLOWED_ORIGINS=http://localhost:5500 jest --runInBand",
     "test:coverage": "cross-env NODE_ENV=test RATE_LIMIT_MAX_REQUESTS=100 ALLOWED_ORIGINS=http://localhost:5500 jest --coverage --runInBand",
