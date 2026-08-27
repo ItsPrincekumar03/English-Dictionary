@@ -59,118 +59,96 @@ function stopPronunciationAudio() {
     }
 }
 
-// ===== State toggling (Modules 13, 14, 15, 18, 23) =====
+// Cache static DOM elements to improve rendering performance
+const dom = {
+    loadingState: null,
+    loadingQuery: null,
+    errorState: null,
+    errorMessage: null,
+    notFoundState: null,
+    notFoundQuery: null,
+    resultCard: null,
+    searchInput: null,
+    searchBtn: null
+};
+
+// Initialize the cache once when the script loads
+document.addEventListener('DOMContentLoaded', () => {
+    dom.loadingState = document.getElementById('loading-state');
+    dom.loadingQuery = document.getElementById('loading-query');
+    dom.errorState = document.getElementById('error-state');
+    dom.errorMessage = document.getElementById('error-message');
+    dom.notFoundState = document.getElementById('not-found-state');
+    dom.notFoundQuery = document.getElementById('not-found-query');
+    dom.resultCard = document.getElementById('result-card');
+    dom.searchInput = document.getElementById('search-input');
+    dom.searchBtn = document.getElementById('search-btn');
+});
+
+// ===== State transition functions (Module 15) =====
 
 function showLoadingState(query) {
-    stopPronunciationAudio(); // Stop any audio from the previous word
+    stopPronunciationAudio();
 
-    const loadingState = document.getElementById('loading-state');
-    const resultCard = document.getElementById('result-card');
-    const loadingQuery = document.getElementById('loading-query');
-    const errorState = document.getElementById('error-state');
-    const notFoundState = document.getElementById('not-found-state');
-
-    if (!loadingState || !resultCard || !loadingQuery || !errorState || !notFoundState) {
-        console.error('Loading state elements not found in the DOM.');
-        return;
+    if (!dom.loadingState || !dom.loadingQuery || !dom.errorState || !dom.notFoundState || !dom.resultCard) {
+        return; // Wait for DOM load if called too early, or elements missing
     }
 
-    loadingQuery.textContent = query;
-    loadingState.hidden = false;
-    resultCard.hidden = true;
-    errorState.hidden = true;
-    notFoundState.hidden = true;
+    dom.loadingQuery.textContent = query;
+    dom.loadingState.hidden = false;
+    dom.errorState.hidden = true;
+    dom.notFoundState.hidden = true;
+    dom.resultCard.hidden = true;
 }
 
 function hideLoadingState() {
-    const loadingState = document.getElementById('loading-state');
-
-    if (!loadingState) {
-        console.error('Loading state element not found in the DOM.');
-        return;
+    if (dom.loadingState) {
+        dom.loadingState.hidden = true;
     }
-
-    loadingState.hidden = true;
-    // NOTE: does NOT touch resultCard visibility anymore. Revealing the
-    // result card is renderResult()'s responsibility. This keeps
-    // hideLoadingState() safe to call unconditionally in a finally block.
 }
 
-/**
- * Disables or re-enables the search input and button.
- * Used to prevent duplicate/overlapping searches while a request is
- * already in progress.
- */
 function setSearchControlsDisabled(disabled) {
-    const input = document.getElementById('search-input');
-    const button = document.getElementById('search-btn');
-
-    if (input) input.disabled = disabled;
-    if (button) button.disabled = disabled;
+    if (dom.searchInput) dom.searchInput.disabled = disabled;
+    if (dom.searchBtn) dom.searchBtn.disabled = disabled;
 }
 
 function showErrorState(message) {
-    const errorState = document.getElementById('error-state');
-    const resultCard = document.getElementById('result-card');
-    const loadingState = document.getElementById('loading-state');
-    const errorMessage = document.getElementById('error-message');
-    const notFoundState = document.getElementById('not-found-state');
-
-    if (!errorState || !resultCard || !loadingState || !errorMessage || !notFoundState) {
-        console.error('Error state elements not found in the DOM.');
+    if (!dom.errorState || !dom.resultCard || !dom.loadingState || !dom.errorMessage || !dom.notFoundState) {
         return;
     }
 
-    errorMessage.textContent = message || 'Please try again.';
-    errorState.hidden = false;
-    resultCard.hidden = true;
-    loadingState.hidden = true;
-    notFoundState.hidden = true;
+    dom.errorMessage.textContent = message || 'Please try again.';
+    dom.errorState.hidden = false;
+    dom.resultCard.hidden = true;
+    dom.loadingState.hidden = true;
+    dom.notFoundState.hidden = true;
 }
 
 function hideErrorState() {
-    const errorState = document.getElementById('error-state');
-
-    if (!errorState) {
-        console.error('Error state elements not found in the DOM.');
-        return;
+    if (dom.errorState) {
+        dom.errorState.hidden = true;
     }
-
-    // Do not reveal the result card here. Retry immediately starts a new
-    // search, and showing the previous result would flash stale content.
-    errorState.hidden = true;
 }
 
 function showNotFoundState(query) {
-    const notFoundState = document.getElementById('not-found-state');
-    const resultCard = document.getElementById('result-card');
-    const loadingState = document.getElementById('loading-state');
-    const errorState = document.getElementById('error-state');
-    const notFoundQuery = document.getElementById('not-found-query');
-
-    if (!notFoundState || !resultCard || !loadingState || !errorState || !notFoundQuery) {
-        console.error('Not-found state elements not found in the DOM.');
+    if (!dom.notFoundState || !dom.resultCard || !dom.loadingState || !dom.errorState || !dom.notFoundQuery) {
         return;
     }
 
-    notFoundQuery.textContent = query;
-    notFoundState.hidden = false;
-    resultCard.hidden = true;
-    loadingState.hidden = true;
-    errorState.hidden = true;
+    dom.notFoundQuery.textContent = query;
+    dom.notFoundState.hidden = false;
+    dom.resultCard.hidden = true;
+    dom.loadingState.hidden = true;
+    dom.errorState.hidden = true;
 }
 
 function hideNotFoundState() {
-    const notFoundState = document.getElementById('not-found-state');
-    const resultCard = document.getElementById('result-card');
-
-    if (!notFoundState || !resultCard) {
-        console.error('Not-found state elements not found in the DOM.');
+    if (!dom.notFoundState || !dom.resultCard) {
         return;
     }
 
-    notFoundState.hidden = true;
-    resultCard.hidden = false;
+    dom.notFoundState.hidden = true;
+    dom.resultCard.hidden = false;
 }
 
 // ===== Result rendering (Modules 20 & 21) =====

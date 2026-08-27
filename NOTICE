@@ -1,0 +1,24 @@
+English Dictionary Application
+====================================
+
+DATASET ATTRIBUTION
+-------------------
+The dictionary definitions, synonyms, antonyms, semantic relations, and pronunciation data used in this application are derived from Open English WordNet 2025.
+
+Open English WordNet is provided under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
+License URL: https://creativecommons.org/licenses/by/4.0/
+
+Project Name: Open English WordNet 2025
+Project URL: https://en-word.net/
+
+TRANSFORMATIONS
+---------------
+In accordance with the CC BY 4.0 license, this project acknowledges that the original Open English WordNet dataset was modified. The source data was parsed, deduplicated, and normalized into a custom JSON/MongoDB schema for optimal search and retrieval within this application.
+
+ORIGINAL PRINCETON WORDNET ACKNOWLEDGMENT
+-----------------------------------------
+Open English WordNet is itself derived from the original Princeton WordNet created by Princeton University. We acknowledge the foundational work of the Princeton WordNet project.
+
+APPLICATION CODE
+----------------
+The source code of the English Dictionary Application is a separate work from the dictionary dataset and is not covered by the CC BY 4.0 dataset license. (Application code licensing is currently undeclared unless otherwise specified in a separate code license file).

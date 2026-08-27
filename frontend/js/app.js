@@ -8,6 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearch();
     initNotFoundSearch();
 
+    // Mobile Menu Toggle (Accessibility enhancement)
+    const menuToggle = document.getElementById('menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+    
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+            mainNav.classList.toggle('open', !isExpanded);
+        });
+    }
+
     // Retry button: re-attempts the last search
     const retryBtn = document.getElementById('retry-btn');
     if (retryBtn) {

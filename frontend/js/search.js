@@ -64,8 +64,10 @@ function initSearch() {
 
     let activeIndex = -1;
 
-    function getMatches(query) {
-        return [];
+    async function getMatches(query) {
+        const normalized = query.trim();
+        if (normalized === '') return [];
+        return await getSuggestions(normalized);
     }
 
     function renderSuggestions(matches) {
@@ -112,6 +114,7 @@ function initSearch() {
         closeSuggestions();
         clearBtn.hidden = false;
         input.focus();
+        runSearch(word);
     }
 
     function updateActiveItem(items) {
@@ -127,10 +130,26 @@ function initSearch() {
         }
     }
 
+    let debounceTimeout = null;
+
     input.addEventListener('input', () => {
         clearBtn.hidden = input.value.length === 0;
-        const matches = getMatches(input.value);
-        renderSuggestions(matches);
+        const currentValue = input.value;
+
+        // Clear the previous timeout if the user types again quickly
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
+        }
+
+        // Wait 300ms after the last keystroke before making the API request
+        debounceTimeout = setTimeout(async () => {
+            const matches = await getMatches(currentValue);
+
+            // Guard against a slow response landing after the user kept typing
+            if (input.value === currentValue) {
+                renderSuggestions(matches);
+            }
+        }, 300);
     });
 
     input.addEventListener('keydown', (event) => {

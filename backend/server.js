@@ -44,3 +44,22 @@ function gracefulShutdown(signal) {
 
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+
+// Handle uncaught exceptions (synchronous errors outside Express)
+process.on('uncaughtException', (err) => {
+    logger.error('UNCAUGHT EXCEPTION - Shutting down', { error: err.message });
+    // In production, Render/PM2 will automatically restart the process after it exits
+    process.exit(1); 
+});
+
+// Handle unhandled promise rejections (asynchronous errors outside Express)
+process.on('unhandledRejection', (err) => {
+    logger.error('UNHANDLED REJECTION - Shutting down', { error: err.message });
+    if (server) {
+        server.close(() => {
+            process.exit(1);
+        });
+    } else {
+        process.exit(1);
+    }
+});

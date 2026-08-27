@@ -30,15 +30,21 @@ describe('API Integration Tests', () => {
             };
         });
         
-        Word.findOne.mockReturnValue({ select: mockSelect });
+        Word.findOne.mockReturnValue({ 
+            select: jest.fn().mockReturnValue({
+                lean: mockSelect
+            }) 
+        });
     });
 
     describe('GET /api/health', () => {
-        it('returns 200 and a success message', async () => {
+        it('returns status reflecting database state and a health check message', async () => {
             const res = await request(app).get('/api/health');
-            expect(res.status).toBe(200);
-            expect(res.body.success).toBe(true);
-            expect(res.body.message).toBe('English Dictionary API is running');
+            // Since this is a unit test without DB connection, it expects 503
+            expect(res.status).toBe(503);
+            expect(res.body.success).toBe(false);
+            expect(res.body.message).toBe('English Dictionary API health check');
+            expect(res.body.database).toBe('disconnected');
         });
     });
 
@@ -55,7 +61,11 @@ describe('API Integration Tests', () => {
 
         it('returns 404 when the word does not exist', async () => {
             // Override mock for this specific test
-            Word.findOne.mockReturnValue({ select: jest.fn().mockResolvedValue(null) });
+            Word.findOne.mockReturnValue({ 
+                select: jest.fn().mockReturnValue({
+                    lean: jest.fn().mockResolvedValue(null)
+                }) 
+            });
 
             const res = await request(app).get('/api/words/nonexistent');
             
@@ -70,6 +80,46 @@ describe('API Integration Tests', () => {
             expect(res.status).toBe(400);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toBe('Invalid search term');
+        });
+
+        it('returns 400 for very long input', async () => {
+            const res = await request(app).get('/api/words/' + 'a'.repeat(101));
+            expect(res.status).toBe(400);
+            expect(res.body.success).toBe(false);
+            expect(res.body.message).toBe('Search term is too long');
+        });
+
+        it('returns 400 for special characters to prevent NoSQL injection', async () => {
+            const res = await request(app).get('/api/words/{$ne:null}');
+            expect(res.status).toBe(400);
+            expect(res.body.success).toBe(false);
+            expect(res.body.message).toBe('Invalid search term');
+        });
+
+        it('returns 500 safely when the database query throws an unexpected error', async () => {
+            // Mock a database crash
+            Word.findOne.mockReturnValue({ 
+                select: jest.fn().mockReturnValue({
+                    lean: jest.fn().mockRejectedValue(new Error('Mongoose connection failed'))
+                })
+            });
+
+            const res = await request(app).get('/api/words/validword');
+            
+            // Expected safe JSON with no stack trace
+            expect(res.status).toBe(500);
+            expect(res.body.success).toBe(false);
+            expect(res.body.message).toBe('Internal server error'); // Stack trace hidden!
+            expect(res.body.message).not.toMatch(/Mongoose/); // Implementation details hidden!
+        });
+    });
+
+    describe('GET /api/words/', () => {
+        it('returns 404 Route not found for missing word parameter', async () => {
+            const res = await request(app).get('/api/words/');
+            expect(res.status).toBe(404);
+            expect(res.body.success).toBe(false);
+            expect(res.body.message).toBe('Route not found');
         });
     });
 
@@ -103,7 +153,7 @@ describe('API Integration Tests', () => {
                 .get('/api/health')
                 .set('Origin', 'http://localhost:5500');
                 
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(503);
             expect(res.headers['access-control-allow-origin']).toBe('http://localhost:5500');
         });
 

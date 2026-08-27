@@ -20,7 +20,14 @@ async function connectDB() {
     }
 
     try {
-        await mongoose.connect(mongoURI);
+        // Enforce a serverSelectionTimeoutMS so the app doesn't hang forever
+        // if the database is down or unreachable. Also specify a connection pool size.
+        const options = {
+            serverSelectionTimeoutMS: 5000, // Fail after 5s instead of default 30s
+            maxPoolSize: 50 // Maintain up to 50 socket connections
+        };
+
+        await mongoose.connect(mongoURI, options);
 
         // Deliberately NOT logging mongoURI itself — it may contain
         // a username/password. Only confirm success generically.

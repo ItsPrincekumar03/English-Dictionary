@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "english-dictionary",
+  "buildCommand": "echo 'No build step required'",
+  "outputDirectory": "frontend",
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}

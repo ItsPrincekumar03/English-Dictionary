@@ -33,6 +33,25 @@ async function getWord(req, res, next) {
     }
 }
 
+/**
+ * Handles GET /api/words/suggest/:prefix
+ * Controller responsibilities only — no query logic here.
+ */
+async function getSuggestions(req, res, next) {
+    try {
+        const { prefix } = req.params;
+        const suggestions = await wordService.getSuggestions(prefix);
+
+        return res.status(200).json({
+            success: true,
+            data: suggestions
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
-    getWord
+    getWord,
+    getSuggestions
 };

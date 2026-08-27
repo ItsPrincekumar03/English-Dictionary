@@ -53,12 +53,56 @@ async function getWordByName(word) {
     // Query MongoDB through the Word model.
     // .select('-__v -createdAt -updatedAt') removes fields the frontend does not need,
     // reducing payload size slightly and preventing unnecessary data transfer.
+    // .lean() returns plain JavaScript objects instead of heavy Mongoose documents,
+    // which is significantly faster for read-only queries.
     const result = await Word.findOne({ word: normalizedWord })
-                             .select('-__v -createdAt -updatedAt');
+        .select('-__v -createdAt -updatedAt')
+        .lean();
 
     return result; // either a Word document, or null
 }
 
+/**
+ * Finds words starting with the given prefix, for autocomplete.
+ * Returns an array of plain word strings (not full documents) —
+ * the frontend only needs the words themselves for a suggestions dropdown.
+ *
+ * @param {string} prefix - partial word typed by the user
+ * @returns {Promise<string[]>} up to 8 matching words, alphabetically sorted
+ */
+async function getSuggestions(prefix) {
+    if (!prefix || typeof prefix !== 'string' || prefix.trim() === '') {
+        return [];
+    }
+
+    const trimmed = prefix.trim();
+
+    // Limit length to avoid expensive regex execution
+    if (trimmed.length > 100) {
+        return [];
+    }
+
+    // Same validation as getWordByName — letters, spaces, hyphens, apostrophes only.
+    const validRegex = /^[a-zA-Z\s\-']+$/;
+    if (!validRegex.test(trimmed)) {
+        return [];
+    }
+
+    const normalized = trimmed.toLowerCase();
+
+    // Escape regex special characters in the user input before building RegExp
+    const escaped = normalized.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    const results = await Word.find({ word: { $regex: '^' + escaped } })
+        .select('word -_id')
+        .sort({ word: 1 })
+        .limit(8)
+        .lean();
+
+    return results.map(doc => doc.word);
+}
+
 module.exports = {
-    getWordByName
+    getWordByName,
+    getSuggestions
 };

@@ -28,7 +28,7 @@ describe('Word Service Unit Tests', () => {
 
         it('normalizes the word (trim and lowercase) before querying', async () => {
             // Setup the mock to return something so it chains .select()
-            const mockSelect = jest.fn().mockResolvedValue({ word: 'happy' });
+            const mockSelect = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue({ word: 'happy' }) });
             Word.findOne.mockReturnValue({ select: mockSelect });
 
             await wordService.getWordByName('  HaPpY  ');
@@ -39,7 +39,7 @@ describe('Word Service Unit Tests', () => {
         });
 
         it('returns null if the word is not found', async () => {
-            const mockSelect = jest.fn().mockResolvedValue(null);
+            const mockSelect = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue(null) });
             Word.findOne.mockReturnValue({ select: mockSelect });
 
             const result = await wordService.getWordByName('unknown');
@@ -48,7 +48,7 @@ describe('Word Service Unit Tests', () => {
 
         it('returns the word document if found', async () => {
             const mockDoc = { word: 'happy', meanings: [] };
-            const mockSelect = jest.fn().mockResolvedValue(mockDoc);
+            const mockSelect = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue(mockDoc) });
             Word.findOne.mockReturnValue({ select: mockSelect });
 
             const result = await wordService.getWordByName('happy');

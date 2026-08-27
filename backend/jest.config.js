@@ -4,7 +4,7 @@ module.exports = {
   verbose: true,
   setupFilesAfterEnv: ['./tests/setup.js'],
   testMatch: [
-    '**/tests/**/*.test.js'
+    '**/tests/**/*.test.js', '**/scripts/migration/__tests__/**/*.test.js'
   ],
   collectCoverageFrom: [
     'src/controllers/**/*.js',

@@ -51,7 +51,23 @@
     /* ----- Header ----- */
     .main-nav {
         display: none;
+        width: 100%;
+        margin-top: var(--space-md);
         /* nav links hidden until Module 19 adds toggle behavior */
+    }
+
+    .main-nav.open {
+        display: block;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        gap: var(--space-sm);
+        padding-bottom: var(--space-sm);
+    }
+
+    .header-container {
+        flex-wrap: wrap;
     }
 
     .menu-toggle {

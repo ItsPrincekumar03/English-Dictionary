@@ -95,6 +95,14 @@ GET http://localhost:5000/api/words/happy
 }
 ```
 
+## Data Sources & Attribution
+
+The dictionary definitions, synonyms, antonyms, semantic relations, and pronunciation data are derived from **Open English WordNet 2025** (https://en-word.net/), which is licensed under the **Creative Commons Attribution 4.0 International (CC BY 4.0)** license (https://creativecommons.org/licenses/by/4.0/). 
+
+In accordance with the CC BY 4.0 license, please note that the original Open English WordNet data has been modified. It was parsed, transformed, and normalized into a custom schema for this application. Open English WordNet is a derivative of the original Princeton WordNet created by Princeton University.
+
+*Note: The English Dictionary application code and the underlying dictionary dataset operate under separate licensing layers. The CC BY 4.0 license applies strictly to the Open English WordNet data, not the application source code.*
+
 ## Current Project Status
 Phase 9 completed. The application is fully integrated, stable, and running via MongoDB with zero frontend mock data.
 

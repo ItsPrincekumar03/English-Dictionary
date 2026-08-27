@@ -4,12 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Dictionary</title>
+    <title>English Dictionary — Definitions, Synonyms & Audio</title>
+    <meta name="description" content="A fast, accessible English Dictionary. Search words to instantly view definitions, parts of speech, synonyms, antonyms, and pronunciation audio.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://english-dictionary-red.vercel.app/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="English Dictionary — Definitions, Synonyms & Audio">
+    <meta property="og:description" content="A fast, accessible English Dictionary. Search words to instantly view definitions, parts of speech, synonyms, antonyms, and pronunciation audio.">
+    <meta property="og:url" content="PENDING_CUSTOM_DOMAIN">
+    <meta property="og:image" content="PENDING_CUSTOM_DOMAIN/social-preview.png">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="English Dictionary">
+    <meta name="twitter:description" content="Instantly view definitions, synonyms, antonyms, and audio.">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "English Dictionary",
+      "description": "Search any English word to instantly see its definition, pronunciation, examples, and synonyms.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any"
+    }
+    </script>
+
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Deferred scripts download in parallel but execute in order after HTML parsing -->
+    <script src="js/api.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/search.js" defer></script>
+    <script src="js/app.js" defer></script>
 </head>
 
 <body>
@@ -215,10 +249,6 @@
 
         </div>
     </footer>
-    <script src="js/api.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/search.js"></script>
-    <script src="js/app.js"></script>
 
 </body>
 

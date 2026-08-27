@@ -55,8 +55,7 @@ const wordSchema = new mongoose.Schema(
             required: [true, 'Word is required'],
             trim: true,
             lowercase: true,   // normalize storage: "Happy" and "happy" are the same entry
-            unique: true,      // one document per word
-            index: true        // speeds up lookups by word
+            unique: true       // one document per word (automatically indexed)
         },
 
         pronunciation: {
