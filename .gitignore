@@ -1,4 +1,25 @@
+# Dependencies
 node_modules/
-.envcoverage/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Database backups
+atlas-backup/
+
+# Logs
 logs/
+*.log
+
+# Test coverage
+coverage/
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

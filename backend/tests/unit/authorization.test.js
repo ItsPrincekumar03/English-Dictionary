@@ -35,8 +35,7 @@ describe('Production Migration Authorization Safety Gates', () => {
     });
 
     test('Test 2: Missing BACKUP_VERIFIED → BLOCKED', () => {
-        const env = { ...validEnv };
-        delete env.BACKUP_VERIFIED;
+        const env = { ...validEnv, BACKUP_VERIFIED: '' };
         const result = runScript(env);
         expect(result.success).toBe(false);
         expect(result.output).toContain('Missing or invalid BACKUP_VERIFIED');

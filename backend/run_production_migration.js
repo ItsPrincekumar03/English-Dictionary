@@ -125,7 +125,9 @@ async function runProductionMigration() {
         // Count approximate canonical words
         const expectedRecords = Object.keys(
             synsets.reduce((acc, s) => {
-                s.words.forEach(w => { acc[w.toLowerCase()] = true });
+                if (s.members && Array.isArray(s.members)) {
+                    s.members.forEach(w => { acc[w.toLowerCase()] = true });
+                }
                 return acc;
             }, {})
         ).length;
