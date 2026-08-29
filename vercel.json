@@ -1,7 +1,7 @@
 {
   "version": 2,
   "name": "english-dictionary",
-  "outputDirectory": ".",
+  "outputDirectory": "frontend",
   "routes": [
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
